@@ -37,7 +37,7 @@ site under:
 
 	.../CPAN/modules/by-module/Apache/
 	.../CPAN/modules/by-category/15_World_Wide_Web_HTML_HTTP_CGI/Apache/
-	.../CPAN/modules/by-authors/Doug_MacEachern/
+	.../CPAN/modules/by-authors/Jeffrey_Baker
 	
 Look for the file mod_perl-1.07-Win32-binary.tar.gz
 	
@@ -108,3 +108,4 @@ http://apache.perl.org/
 
 For comments or questions about this binary distribution ONLY, please email
 jeff@godzilla.tamu.edu
+
