@@ -9,7 +9,7 @@ DESCRIPTION:
 ------------
 
 This is a binary version of Doug MacEachern's mod_perl, built for Win32.
-This binary is concurrent with version 1.08 of mod_perl.
+This binary is concurrent with version 1.10 of mod_perl.
 
 Mod_perl is an extremely useful module for the Apache HTTP server.  It
 allows you to: achieve a significant speed increase over CGI, configure
@@ -39,7 +39,7 @@ site under:
 	.../CPAN/modules/by-category/15_World_Wide_Web_HTML_HTTP_CGI/Apache/
 	.../CPAN/modules/by-authors/Jeffrey_Baker
 	
-Look for the file mod_perl-1.08-bin-bindist1-i386-win32-vc5.tar.gz
+Look for the file mod_perl-1.10-bin-bindist1-i386-win32-vc5.tar.gz
 	
 To find the CPAN site nearest you, go to http://www.perl.com/CPAN
 
