@@ -1,20 +1,308 @@
-=head1 ACKNOWLEDGEMENTS
+=head1 NAME
 
-Extra Thanks to:
-
-Andreas Koenig <andreas.koenig@franz.ww.tu-berlin.de>
-for *lots* of bug spotting, fixing and patching, 
-Apache::Registry and CGI.pm overhaul efforts (aka CGI::XA &
-CGI::Switch) 
-
-Gisle Aas <aas@sn.no>
-For getting this effort started and many contributions since 
-
-Other contributors are mentioned below.
+Changes - Apache mod_perl change logfile
 
 =head1 CHANGES
 
 =over 3
+
+=item 1.15 - July 24, 1998
+
+new experimental XS implementation of Apache::PerlRun/Apache::Registry
+handlers in module Apache::PerlRunXS (enable with PERL_RUN_XS=1)
+
+added $r->get_server_name method
+
+move /tmp/mod_perl_* to t/logs, t/conf
+
+alias Apache::Util unescape_uri -> Apache::unescape_url
+
+alias Apache::Log emerg -> emergency, crit -> critical
+
+deal with PL_ renaming in 5.004_76+
+
+fixes to support to apache_1.3.0+ssl_1.19 [Salvador Ortiz]
+
+add another dTHR so we build/run with threaded Perl again
+
+USE_APXS fixups:
+ 
+ -use apaci/find_source instead of hard-coding files in apaci/configure
+ -re-gen apaci/mod_perl.config before running apache/configure
+ -chmod 0644, apaci/mod_perl.config
+
+=item 1.14 - July 18, 1998
+
+PERL_DEBUG=1 w/ USE_APACI=1 will properly link against libperld if exists
+
+remove mod_perl.pm_version file.  move Makefile.PL-time generated code
+from mod_perl.pm.PL to mod_perl_hooks.pm.PL, remove mod_perl.pm.PL and
+ship with a mod_perl.pm again that is not modified by Makefile.PL so
+CPAN.pm can 'install mod_perl' again 
+
+added Apache::Util module (enable with PERL_UTIL_API=1 or EVERYTHING=1)
+
+only break out of the write loop if rwrite() returns -1 and
+r->connection->aborted, otherwise continue  
+
+added Apache::URI module (enable with PERL_URI_API=1 or EVERYTHING=1)
+
+register_cleanup to SvREFCNT_dec handler stacks, otherwise we leak
+during kill -USR1 when configuration is re-read
+
+TAINT_NOT just after perl_run(), otherwise 'make test' may choke (when
+it shouldn't): 
+   "Insecure dependency in eval while running with -T switch.
+   Callback called exit."
+[Salvador Ortiz]
+
+move "rwrite returned -1" message from warn level to debug level
+
+Makefile.PL fix for 'make test' and --enable-shared= modules
+
+applied src/modules/perl/Makefile fixup for ApacheSSL
+[Iosif Fettich <ifettich@netsoft.ro>]
+
+experimental optimization for Apache::Constants if XS_IMPORT=1 is
+given to Makefile.PL:  
+drop heavy Exporter::import/@EXPORT/@EXPORT_OK/%EXPORT_TAGS for
+Apache::Constants::import written in C, shaves ~25K from resident
+memory
+
+=item 1.13 - July 13, 1998
+
+fix Makefile.PL setting of numeric $User/$Group for 'make test'
+[Michael K. Sanders <msanders@confusion.net>]
+
+giving PERL_STASH_POST_DATA=1 to Makefile.PL will save 
+read(STDIN, ...)/$r->read data in $r->subprocess_env for logging 
+
+added Apache::Log module (enable with PERL_LOG_API=1 or EVERYTHING=1)
+
+add mod_perl.pm_version so CPAN.pm can 'install mod_perl' again
+
+ensure Apache::Server::CWD is untainted
+
+add support to compile with -DPERL_OBJECT (win32 + 5.004_73+)
+
+add dir_merge support for directive handlers
+
+$r->print/print will dereference \$scalar refs to strings so scripts
+can avoid string copies when sending data to the client, 
+e.g. print \$large_string 
+
+set $0 to .conf file name when inside <Perl> sections
+
+fixed $r->subprocess_env bug introduced in 1.12, spotted by Ken Williams
+
+'*CORE::GLOBAL::exit = \&Apache::exit' for 5.005-tobe+ Perls 
+
+perl_startup will now call perl_init_i18nl10n(1), for 'use locale' 
+
+Makefile.PL will now set CFLAGS="$PERL_EXTRA_CFLAGS" with USE_APACI=1
+thanks to help from Vivek Khera
+
+improve support for Makefile.PL USE_APXS=... to generate modperl.config
+
+add PERL_TIE_TABLES and PERL_DIRECTIVE_HANDLERS to EVERYTHING=1 group
+
+add some casts to avoid warnings from const char changes in 1.3.1-dev
+
+write_client will break out of it's loop if rwrite returns a -1 error 
+condition, which could cause spinning httpds otherwise
+[Eric Eisenhart <eric@sonic.net>]
+
+properly default $Apache::Registry::NameWithVirtualHost=1, 
+thanks to spot by Ryan A. Whelan
+
+fix tied $r->err_headers_out cut-n-pasto [Peter Kaas <Peter.Kaas@lunatech.com>]
+
+Apache::read_client_block will now use safemalloc/safefree, rather
+than palloc, so memory is released after each read(), rather than at
+the end of a request.  (e.g. so file uploads don't cause too much growth)
+
+Added mod_perl_method_handlers.pod file, a little article about using
+perl objects with modperl. [ ask@netcetera.dk ]
+
+Apache::Registry will now save END blocks just after the script is compiled,
+instead of after the subroutine call.  otherwise, if the client breaks the
+connection, the hard_timeout will jump out of perl_handler(), and the save 
+will never happen.  Thanks to Robert Nice and Ben Laurie for spotting this.
+
+bug fix so PATH_INFO is properly reset, thanks to David Sklar for the spot
+
+=item 1.12 - June 14, 1998
+
+added a long overdue CREDITS file
+
+add SSLCacheServer{Port,Path} directives for ApacheSSL + 'make test'
+[Adam Laurie <adam@algroup.co.uk>]
+
+added $r->location method
+
+Various fixes and improvements to the APACI support:
+
+ - Added support for PERL_THREADS to apaci stuff.  
+   This is needed under the bleeding edge Perl's 
+   (e.g. 5.004_6X).
+ - Avoid more unnecessary file copies and edits under 
+   APACI situation. 
+ - Cleanup the PERL_XXX hooks in apaci/mod_perl.config[.sh]
+ [Ralf S. Engelschall]
+
+ - Add additional .xs.o target to apaci/Makefile.tmpl to
+   workaround braindead Makes.
+ [Brian P Millett <bpm@ec-group.com>]
+
+if $r->subprocess_env is called in a void context just call
+(void)perl_cgi_env_init(r)
+
+$ENV{PATH}: don't let perl_clear_env() clear it's value
+
+prevent $r->dir_config SEGV if called during ChildInit, 
+spotted by Lincoln Stein
+
+add a dTHR to perl_util.c for threaded 5.004_66
+[Brian P Millett <bpm@ec-group.com>] 
+
+added $r->get_server_port method
+
+sfio read will now call Apache::read, as it should.  
+Thanks to Steve Farrell for the spot
+
+added $r->last method
+
+$r->cgi_env when called in a void context will simply setup the
+subprocess_env table 
+
+avoid some possible warnings in Apache.pm [Brian Mosley <ix@maz.org>]
+
+added $r->request_time method
+
+fix bug when PERL_MARK_WHERE was undefined spotted by Kermit Tensmeyer
+
+emulate pre-1.3b6 r->uri/r->proxyreq behavior for proxy requests
+inside the post_read_request_handler and add t/internal/proxy test 
+
+added additional installation document INSTALL.apaci which
+describes the new APACI stuff (including background information).
+[Ralf S. Engelschall <rse@engelschall.com>]
+
+added new (but still optional!) Apache 1.3 support via the new Apache
+Autoconf-style Interface (APACI): The option USE_APACI=1 triggers a new
+build-environment (from local apaci/) for the APACHE_SRC/src/modules/perl/
+which provides a clean way (i.e.  without patching anything inside APACHE_SRC,
+not even the Configuration file) of configuring mod_perl via a
+APACHE_SRC/src/modules/perl/mod_perl.config file. The completey configuration
+is enabled by just using the APACI command "configure
+--activate-module=src/modules/perl/libperl.a" 
+[Ralf S. Engelschall <rse@engelschall.com>]
+
+experimental tie of $0 to Apache->request->filename, enable with
+-DPERL_TIE_SCRIPTNAME  
+
+added little Apache::system that redirects output to the browser,
+should this be imported into Apache::{Registry,PerlRun} scripts?
+
+new Apache::Tie module, provides Apache::TieHashTable for a proper
+interface to Apache table structures.  The following methods, called
+in a scalar context with no "key" argument, will return a HASH
+reference, where HASH is tied to Apache::TieHashTable:
+headers_in, headers_out, err_headers_out, notes, dir_config, subprocess_env
+enable with PERL_TIE_TABLES=1
+see also: t/net/perl/tie_table.pl
+
+remove Cwd::fastcwd usage from Apache::Registry, use
+$Apache::Server::CWD set at server startup instead
+
+new method Apache->chdir_file, use to replace 
+chdir File::Basename::dirname($r->filename) in Apache::Registry
+
+replace Apache::Registry use of IO::File w/ Apache::gensym
+
+new function Apache::gensym (xsub, does same as Symbol::gensym)
+
+add $ServerRoot/lib/perl to @INC at startup
+
+add code to deal with 1.3b7-dev's SERVER_SUBVERSION replacement
+
+a few doc patches [John D Groenveld <jdg117@elvis.arl.psu.edu>]
+
+re-implemented $r->read to properly use *client_block methods and call
+reset_timeout after each read in the loop.  until this is well tested,
+the method is called new_read. to test on tie'd STDIN reads, a startup
+script can say this:
+*Apache::READ = \&Apache::new_read;
+
+added setup_client_block, should_client_block and get_client_block
+methods
+
+modules/cgi test will attempt a fileupload of perlfunc.pod to
+file_upload.cgi if HTTP::Request::Common is installed
+(libwww-perl-5.09+) and $CGI::VERSION >= 2.39
+
+make $r->connection->aborted work as documented again, thanks to spot
+by Jens Heunemann
+
+swap order of stacked handlers so dynamic ones (push_handlers) are
+invoked after server .conf configured handlers
+
+replace uses of SvPVX() with SvPV() to prevent possible core dump if
+called with a non-string value
+
+added COMPILED REGULAR EXPRESSIONS section to mod_perl_traps.pod
+[David Landgren <david@landgren.net>, 
+Mark Mills <mark@ntr.net>, 
+Randal Schwartz <merlyn@stonehenge.com>, 
+Jens Heunemann <heunemann2@janet.de>]
+
+have ldopts yank ExtUtils::Liblist message:
+ Note (probably harmless): No library found for ...
+from stdout to stderr [Stas Bekman <sbekman@iil.intel.com>]
+
+change Apache.xs/typemap so classes who inherit from the Apache class
+can invoke methods with a hash object, provided $hash->{_r} contains a
+request_rec object
+
+additions to experimental Perl directive support:
+-  a per-directory config object is now passed as the first argument
+   to directive handlers registered via Apache::ExtUtils->xs_cmd_table
+   the object is a hash reference blessed into the same class as the handler
+- $r->dir_config with no args now looks for per-directory config in
+  the caller's namespace
+-  xs_cmd_table now looks for a prototype to determine TAKE1,
+   TAKE2, TAKE3, etc.
+
+added $Apache::CurrentThreadId variable under win32
+
+added method/object handler tests to internal/stacked test
+
+fixed broken modules/eperl test spotted by Tom Mornini
+
+fixed Makefile.PL bug spotted by Jon Drukman w/ PERL_CHILD_EXIT=1
+in fact, PerlChildInitHandler/PerlHandlerExitHandler are always
+enabled by default now with 1.3bx+
+
+added experimental get_handlers/set_handlers methods 
+(enable with PERL_GET_SET_HANDLERS=1)
+
+new module Apache::PerlRun, splits out Apache::Registry functionality
+and provides a `dirty-perl' handler (see pod).  thanks to Stas Bekman
+for testing and suggestions.
+
+PERL_OBJECT_HANDLERS now enabled #ifdef PERL_METHOD_HANDLERS
+
+widen scope of mutex lock under win32 to avoid possible deadlock
+[Gerald Richter <richter@ecos.de>]
+
+fixed bug in directory_merge where FLAG directives would inherit `On'
+from the base configuration, even if the directory explicitly had the
+flag turned `Off', this was the case for PerlSendHeader and
+PerlSetupEnv.  thanks to Mark-Jason Dominus for the spot.
+
+added `grab' function to Apache::test, which fetches a url and gives
+diagnostics as to validity of the HTTP response 
+(a test for properly formatted headers!)
 
 =item 1.11 - April 21, 1998
 
@@ -578,7 +866,7 @@ added new method $r->some_auth_required
 `METHODS' Apache::Constant added to import tag :methods
 
 perl_stdout2client() will now set $| instead of perl_handler(), so
-thanks to Salvador Ortiz Garcia for the tip
+thanks to Salvador Ortiz for the tip
 
 PerlSetEnv will now call my_setenv() underneath thanks to Tim Bunce
 for the tip 
@@ -699,7 +987,7 @@ for internal redirects (spotted by $r->cgi_header_out), don't
 perl_call_halt(), instead, tie STDOUT to the Apache::FakeRequest class
 which just soaks up print() output.
 
-suggestion from Salvador Ortiz Garcia, for table methods, if value is
+suggestion from Salvador Ortiz, for table methods, if value is
 undef, call table_unset underneath, these methods are subprocess_env, 
 header_in, header_out, err_header_out, notes and dir_config. e.g.:
 
@@ -751,7 +1039,7 @@ added some 3rd-party tests for Apache::Stage and Apache::Sandwich
 added Apache::test module
 
 back out support for internal redirects, caused big problems with
-sfio-enabled Perl spotted by Lupe Christoph and Salvador Ortiz Garcia 
+sfio-enabled Perl spotted by Lupe Christoph and Salvador Ortiz 
 (can still try by setting $Apache::DoInternalRedirect=1 #ifndef USE_SFIO)
 
 added Apache::SIG module for testing
@@ -895,7 +1183,7 @@ added Apache::Include->virtual($uri) method
 -cat apache_x.x.x/src/Makefile.config and src/modules/perl/Makefile
  together so we get $(INCLUDES) (for os/unix, etc)
 
-applied patch from Salvador Ortiz Garcia so calling $r->args in an
+applied patch from Salvador Ortiz so calling $r->args in an
 array context will not produce "Odd number of elements in hash list" 
 
 $r->auth_name can now be modified
@@ -1428,7 +1716,7 @@ fix exit() so we don't need to $r->rflush first and we make Rob happy
 
 fix bug in $r->requires, caught by Eric Bartley
 
-go back to $|=1 #ifdef USE_SFIO, caught by Salvador Garcia
+go back to $|=1 #ifdef USE_SFIO, caught by Salvador Ortiz
 
 =item 0.97_02 - 04/29/97
 
@@ -1743,7 +2031,7 @@ we now passthru httpd's CFLAGS1 via MM's DEFINE
 
 we now define SERVER_SUBVERSION as suggested by Andreas
 
-fixed $$ bug in CGI::XA with fix from Salvador Garcia
+fixed $$ bug in CGI::XA with fix from Salvador Ortiz
 
 added $r->is_initial_req method, now used by these modules:
 Apache::AuthenDBI, Apache::AccessLimitNum, Apache::AuthzAge
@@ -2230,7 +2518,7 @@ minor clean-up
 
 fixed port and query_string related bugs in Apache::Msql example
 
-applied patch from Salvador Garcia <sortiz@cfe.gob.mx> to fix PerlTransHandler bugs
+applied patch from Salvador Ortiz <sog@msg.com.mx> to fix PerlTransHandler bugs
 spotted by Hugues Lafarge <Hugues.Lafarge@afp.com>
 
 applied Apache::Registry patch from Andreas  
@@ -2386,10 +2674,10 @@ seems like a more appropriate name after Salvador's
 'AddHandler' suggestion
 
 added item to the handler_rec so we can say 'AddHandler'
-Thanks to Salvador Garcia <sortiz@cfe.gob.mx>
+Thanks to Salvador Ortiz <sog@msg.com.mx>
 
 fixed bug with storing 'PerlModule's read from srm.conf
-Thanks to Salvador Garcia <sortiz@cfe.gob.mx> for the spot and helping with the fix
+Thanks to Salvador Ortiz <sog@msg.com.mx> for the spot and helping with the fix
 more Makefile.tmpl fixes from Andreas Koenig <andreas.koenig@franz.ww.tu-berlin.de>
 
 =item release 0.70b1 - July 14, 1996
