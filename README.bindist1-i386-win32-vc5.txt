@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: README,v 0.20 1998/02/10 09:50:30 jbaker Exp $
+# $Id: README,v 0.20 1998/03/07 01:45:30 jbaker Exp $
 #
 #-------------------------------------------------------
 
@@ -9,7 +9,7 @@ DESCRIPTION:
 ------------
 
 This is a binary version of Doug MacEachern's mod_perl, built for Win32.
-This binary is concurrent with version 1.07_04 of mod_perl.
+This binary is concurrent with version 1.08 of mod_perl.
 
 Mod_perl is an extremely useful module for the Apache HTTP server.  It
 allows you to: achieve a significant speed increase over CGI, configure
@@ -39,7 +39,7 @@ site under:
 	.../CPAN/modules/by-category/15_World_Wide_Web_HTML_HTTP_CGI/Apache/
 	.../CPAN/modules/by-authors/Jeffrey_Baker
 	
-Look for the file mod_perl-1.07_04-bin-bindist1-i386-win32-vc5.tar.gz
+Look for the file mod_perl-1.08-bin-bindist1-i386-win32-vc5.tar.gz
 	
 To find the CPAN site nearest you, go to http://www.perl.com/CPAN
 
@@ -49,7 +49,7 @@ PREREQUISITES:
 To use this binary of mod_perl, you need at least the following software:
 
 Windows NT 4.0 sp3
-Apache 1.3b3  (http://www.apache.org/dist)
+Apache 1.3b5  (http://www.apache.org/dist)
 Perl 5.004_04 (http://www.perl.com/CPAN/src/latest.tar.gz)
 
 ...and an Intel processor.
