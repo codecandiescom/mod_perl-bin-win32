@@ -1,6 +1,7 @@
 D:\perl\lib\site\Apache.pm
 D:\perl\lib\site\Apache\Constants.pm
 D:\perl\lib\site\Apache\Debug.pm
+D:\perl\lib\site\Apache\ExtUtils.pm
 D:\perl\lib\site\Apache\FakeRequest.pm
 D:\perl\lib\site\Apache\Include.pm
 D:\perl\lib\site\Apache\MyConfig.pm
@@ -26,5 +27,6 @@ D:\perl\lib\site\auto\Apache\Symbol\Symbol.lib
 D:\perl\lib\site\cgi_to_mod_perl.pod
 D:\perl\lib\site\mod_perl.pm
 D:\perl\lib\site\mod_perl.pod
+D:\perl\lib\site\mod_perl_cvs.pod
 D:\perl\lib\site\mod_perl_traps.pod
 D:\perl\lib\site\mod_perl_tuning.pod

@@ -1,6 +1,6 @@
 #-------------------------------------------------------
 #
-# $Id: README,v 0.20 1998/03/07 01:45:30 jbaker Exp $
+# $Id: README,v 0.22 1998/04/24 01:39:30 jbaker Exp $
 #
 #-------------------------------------------------------
 
@@ -9,7 +9,7 @@ DESCRIPTION:
 ------------
 
 This is a binary version of Doug MacEachern's mod_perl, built for Win32.
-This binary is concurrent with version 1.10 of mod_perl.
+This binary is concurrent with version 1.11 of mod_perl.
 
 Mod_perl is an extremely useful module for the Apache HTTP server.  It
 allows you to: achieve a significant speed increase over CGI, configure
@@ -39,7 +39,7 @@ site under:
 	.../CPAN/modules/by-category/15_World_Wide_Web_HTML_HTTP_CGI/Apache/
 	.../CPAN/modules/by-authors/Jeffrey_Baker
 	
-Look for the file mod_perl-1.10-bin-bindist1-i386-win32-vc5.tar.gz
+Look for the file mod_perl-1.11-bin-bindist1-i386-win32-vc5.tar.gz
 	
 To find the CPAN site nearest you, go to http://www.perl.com/CPAN
 
@@ -49,7 +49,7 @@ PREREQUISITES:
 To use this binary of mod_perl, you need at least the following software:
 
 Windows NT 4.0 sp3
-Apache 1.3b5  (http://www.apache.org/dist)
+Apache 1.3b5 or 1.3b6 (http://www.apache.org/dist)
 Perl 5.004_04 (http://www.perl.com/CPAN/src/latest.tar.gz)
 
 ...and an Intel processor.
@@ -68,8 +68,11 @@ and copy the lib\ tree to your Perl top level directory (e.g. c:\perl).
 
 **BE CAREFUL NOT TO CLOBBER YOUR PERL LIB TREE!**
 
-Then, simply move ApacheModulePerl.dll to the modules directory under your 
-apache tree (e.g. c:\apache\modules\)
+Find the library you need in the top level of this directory.  For instance,
+if you are using Apache 1.3b5, use ApacheModulePerl-Release-1.3b5.dll.
+Rename this library to ApacheModulePerl.dll.  Then, simply move 
+ApacheModulePerl.dll to the modules directory under your apache tree 
+(e.g. c:\apache\modules\)
 
 To use mod_perl, you will need to add the following line to your
 httpd.conf:
@@ -81,17 +84,8 @@ Please consult README for more info.
 CAVEATS AND KNOWN PROBLEMS:
 ---------------------------
 
-There is a known problem using mod_perl with Apache on Windows NT and MSIE
-3.x clients.  Specifically, the Apache server will crash when an MSIE
-client requests any document handled by mod_perl.  A bug report has been
-opened with the Apache group (pr#1729).
-
-The workaround for this problem is to comment or delete this line from your
-srm.conf:
-
-BrowserMatch Mozilla/2 nokeepalive
-
-(FYI: MSIE reports itself as Mozilla/2 (compatible; MSIE 3.0...))
+For some reason, rand() is completely broken on mod_perl under Win32.  
+Don't use it unless you want the same number everytime.
 
 FURTHER INFO:
 -------------
