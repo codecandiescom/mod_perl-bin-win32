@@ -2,7 +2,7 @@ DESCRIPTION:
 ------------
 
 This is a binary version of Doug MacEachern's mod_perl, built for Win32.
-This binary is concurrent with version 1.15 of mod_perl.
+This binary is concurrent with version 1.16 of mod_perl.
 
 Mod_perl is an extremely useful module for the Apache HTTP server.  It
 allows you to: achieve a significant speed increase over CGI, configure
@@ -32,7 +32,7 @@ site under:
   .../CPAN/modules/by-category/15_World_Wide_Web_HTML_HTTP_CGI/Apache/
   .../CPAN/modules/by-authors/Jeffrey_Baker
   
-Look for the file mod_perl-1.14-bin-bindist1-i386-win32-vc5.zip
+Look for the file mod_perl-1.16-bin-bindist1-i386-win32-vc5.zip
   
 To find the CPAN site nearest you, go to http://www.perl.com/CPAN
 
@@ -42,22 +42,28 @@ PREREQUISITES:
 To use this binary of mod_perl, you need at least the following software:
 
 Windows NT 4.0 sp3
-Apache 1.3.1 (http://www.apache.org/dist)
-Perl 5.004_04 (http://www.perl.com/CPAN/src/latest.tar.gz)
+Apache 1.3.3 (http://www.apache.org/dist)
+Perl 5.005_05 (http://www.perl.com/CPAN/src/latest.tar.gz)
 
 ...and an Intel processor.
 
 This binary was built using Microsoft Visual C++ 5.0 on Windows NT 4.0
 (Build 1381) Sevice Pack 3.  It has been tested on this platform only, and
 is not garaunteed to run on Windows 95.  If you successfully use this
-binary on Windows 95, please let me know at jeff@godzilla.tamu.edu.
+binary on Windows 95, please let me know at jwb@tca.net
+
+This binary absolutely will not work with any other perl other than 
+5.005_02, and probably will not any version of Perl built with 
+Borland C.  Anyone who writes to complain that this software doesn't
+work with Gurusamy Sarathy's 5.004 perl binary will receive a round
+thwapping.
 
 INSTALLATION:
 -------------
 
 This archive includes both the binary mod_perl library and the required perl
 side of mod_perl.  To install, extract this archive to a temporary location 
-and copy the perl\lib\ tree to your Perl top level directory (e.g. c:\perl).  
+and copy the perl\site\ tree to your Perl top level directory (e.g. c:\perl).  
 
 **BE CAREFUL NOT TO CLOBBER YOUR PERL LIB TREE!**
 
@@ -74,11 +80,7 @@ Please consult README for more info.
 CAVEATS AND KNOWN PROBLEMS:
 ---------------------------
 
-For some reason, rand() is completely broken on mod_perl under Win32.  
-Don't use it unless you want the same number everytime.
-
-Apache 1.3.1 still won't start as a service.  Although, you can use
-srvany.exe to beat it into submission.
+Don't run Apache 1.3 as a service.  Run it from the console.
 
 FURTHER INFO:
 -------------
@@ -100,5 +102,5 @@ http://perl.apache.org/
 http://apache.perl.org/
 
 For comments or questions about this binary distribution ONLY, please email
-jeff@godzilla.tamu.edu
+jwb@tca.net
 
